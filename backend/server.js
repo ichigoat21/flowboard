@@ -1,19 +1,27 @@
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
+import { Server } from "socket.io";
+import mongoose from "mongoose";
+import dotenv from "dotenv"
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+dotenv.config()
 
-io.on("connection", (socket) => {
-  console.log("A user connected");
 
-  // TODO: Implement WebSocket events for task management
+async function db_connection() {
+  await mongoose.connect(`mongodb+srv://shivresides:${process.env.MONGO_DB_PASS}@second-brain.4jq3gmh.mongodb.net/kanban`)
+}
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
+db_connection()
+
+
+const io = new Server(3001, {
+  cors: {
+    origin: "*",
+  },
 });
 
-server.listen(5000, () => console.log("Server running on port 5000"));
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("message", ()=> {
+    socket.emit("reply", "hi there")
+  });
+});
