@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite"
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,5 +21,5 @@ export default defineConfig({
     setupFiles: "./src/setupTests.js",
     exclude: ["node_modules", "src/tests/e2e"],
   },
-  plugins: [react()],
+  plugins: [react(), tailwindcss()]
 });

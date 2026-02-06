@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import KanbanBoard from "./components/KanbanBoard";
 import {io} from "socket.io-client"
+import { Button } from "./components/Button";
 
 
 const socket = io("http://localhost:3001");
@@ -24,6 +25,7 @@ function App() {
   return (
     <div className="App">
       <h1>Real-time Kanban Board</h1>
+      <Button/>
       <KanbanBoard />
     </div>
   );
