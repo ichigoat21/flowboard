@@ -18,12 +18,12 @@ function KanbanBoard() {
       setSocket(ws);
     });
 
-    // initial sync
+
     ws.on("sync:tasks", (tasksFromServer) => {
       setTasks(tasksFromServer);
     });
 
-    // realtime updates
+
     ws.on("task:created", (task) => {
       setTasks((prev) => [...prev, task]);
     });
@@ -33,12 +33,16 @@ function KanbanBoard() {
     };
   }, []);
 
+  function modalHandler(){
+    setOpen(!open)
+  }
+
   return (
     <div>
       <h2>Kanban Board</h2>
-      <Button text=" Add Task" />
+      <Button size="md" variant="secondary" text="Add Task" onclick={()=> {setOpen(true)}} />
       <InputComponent type="text" placeholder="Go to gym"/>
-      <ModalComponent/>
+      <ModalComponent onclose={modalHandler} open={open}/>
     </div>
   );
 }
