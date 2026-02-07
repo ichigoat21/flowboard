@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { Button } from "./ui/Button";
-import { InputComponent } from "./ui/Input";
 import { ModalComponent } from "./ui/Modal";
+import { InputComponent } from "./ui/Input";
+import { Button } from "./ui/Button";
 
 
 function KanbanBoard() {

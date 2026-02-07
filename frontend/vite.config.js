@@ -21,8 +21,5 @@ export default defineConfig({
     setupFiles: "./src/setupTests.js",
     exclude: ["node_modules", "src/tests/e2e"],
   },
-  plugins: [react(), tailwindcss()],
-  alias: {
-    "@": path.resolve(__dirname, "./src"),
-  }
+  plugins: [react(), tailwindcss()]
 });

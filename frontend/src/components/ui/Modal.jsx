@@ -1,8 +1,8 @@
 import { Paperclip } from "lucide-react"
 import { CrossIcon } from "../../icons/crossIcon"
-import { Button } from "./Button"
-import { InputComponent } from "./Input"
 import { useRef, useState } from "react"
+import { InputComponent } from "./Input"
+import { Button } from "./Button"
 
 export function ModalComponent({ onClose }) {
   const titleRef = useRef(null)
