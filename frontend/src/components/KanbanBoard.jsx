@@ -42,7 +42,7 @@ function KanbanBoard() {
       <h2>Kanban Board</h2>
       <Button size="md" variant="secondary" text="Add Task" onclick={()=> {setOpen(true)}} />
       <InputComponent type="text" placeholder="Go to gym"/>
-      <ModalComponent onclose={modalHandler} open={open}/>
+      <ModalComponent onclose={()=> {modalHandler()}} open={open}/>
     </div>
   );
 }

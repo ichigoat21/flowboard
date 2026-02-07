@@ -18,15 +18,16 @@ export function ModalComponent({ onclose, open}) {
     setFileName(file?.name || "")
   }
 
-  const handleSubmit = () => {
-    console.log({
-      title: titleRef.current?.value,
-      description: descRef.current?.value,
-      priority,
-      state,
-      fileName,
-    })
-    onclose?.()
+  function handleSubmit () {
+    console.log("hi")
+    // await console.log({
+    //   title: titleRef.current?.value,
+    //   description: descRef.current?.value,
+    //   priority,
+    //   state,
+    //   fileName,
+    // })
+    onclose()
   }
   if (open === false ) return null
 
@@ -137,7 +138,7 @@ export function ModalComponent({ onclose, open}) {
           </div>
 
           <Button
-            onClick={handleSubmit}
+            onclick={handleSubmit}
             variant="primary"
             size="lg"
             text="Add Task"
