@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "./Button";
-import { Input } from "./Input";
-import { Modal } from "./Modal";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { Button } from "./ui/Button";
+import { InputComponent } from "./ui/Input";
+import { ModalComponent } from "./ui/Modal";
+
 
 function KanbanBoard() {
   const [open, setOpen] = useState(false);
@@ -35,27 +36,9 @@ function KanbanBoard() {
   return (
     <div>
       <h2>Kanban Board</h2>
-
-      <Button onClick={() => setOpen(true)}>Add Task</Button>
-
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        socket={socket}
-      />
-
-      <div className="mt-4 space-y-2">
-        {tasks.map((task) => (
-          <div
-            key={task._id}
-            className="border rounded p-3"
-          >
-            <h3 className="font-medium">{task.title}</h3>
-            <p className="text-sm text-gray-600">{task.description}</p>
-            <span className="text-xs">Priority: {task.priority}</span>
-          </div>
-        ))}
-      </div>
+      <Button text=" Add Task" />
+      <InputComponent type="text" placeholder="Go to gym"/>
+      <ModalComponent/>
     </div>
   );
 }
