@@ -4,29 +4,30 @@ import { useRef, useState } from "react"
 import { InputComponent } from "./Input"
 import { Button } from "./Button"
 
-export function ModalComponent({ onclose, open}) {
-  const titleRef = useRef(null)
-  const descRef = useRef(null)
-  const fileInputRef = useRef(null)
+export function ModalComponent({ onclose, open, socket}) {
+
 
   const [priority, setPriority] = useState("low")
   const [state, setState] = useState("todo")
   const [fileName, setFileName] = useState("")
 
+  const titleRef = useRef()
+  const descRef = useRef()
+  const fileInputRef = useRef()
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0]
     setFileName(file?.name || "")
   }
+  const data = {
+    title : titleRef.current?.value,
+    description : descRef.current?.value,
+    column : state,
+    priority : priority,
+  }
 
   function handleSubmit () {
-    console.log("hi")
-    // await console.log({
-    //   title: titleRef.current?.value,
-    //   description: descRef.current?.value,
-    //   priority,
-    //   state,
-    //   fileName,
-    // })
+    socket.emit("task:create", data )
     onclose()
   }
   if (open === false ) return null
