@@ -59,7 +59,7 @@ io.on("connection", async (socket) => {
       io.emit("task:moved", { id, column });
     }
   });
-  socket.on("task:delete", async (id) => {
+  socket.on("task:delete", async ({id}) => {
     await Task.findByIdAndDelete(id);
     io.emit("task:deleted", id);
   });

@@ -20,6 +20,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
       setDescription(task.description ?? "")
       setPriority(task.priority ?? "low")
       setState(task.state ?? "todo")
+      
     } else {
       setTitle("")
       setDescription("")
@@ -48,6 +49,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
     column : state,
     priority : priority,
   }
+
 
   function handleSubmit () {
     if(!isUpdate){

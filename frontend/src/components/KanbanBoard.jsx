@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { ModalComponent } from "./ui/Modal";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
+import { Loader } from "../icons/loading";
 
 function KanbanBoard() {
   const [open, setOpen] = useState(false);
@@ -55,18 +56,26 @@ function KanbanBoard() {
     setIsUpdate(true);
     setOpen(true);
   }
-
   function deleteHandler(task) {
-    if (socket) {
-      socket.emit("task:delete", task._id);
-    }
+    console.log("DELETE CLICKED", task);
+    setSelectedTask(task);
+    socket.emit("task:delete", { id: task._id });
   }
+
+  if (!socket){
+    return <div className="min-h-screen w-full flex flex-col items-center justify-center">
+      <h1 className="text-3xl font-bold text-slate-900">Kanban Board</h1>
+      <Loader/>
+    </div>
+  }
+  
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-slate-900">Kanban Board</h1>
+          
           <Button
             size="md"
             variant="secondary"
