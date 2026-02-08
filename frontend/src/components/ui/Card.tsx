@@ -1,14 +1,9 @@
+import { useState } from "react";
 import { TaskCard } from "./Taskcard";
 
 
-export function Card({ title, tasks }) {
-
-    function onEditHandler(){
-        console.log("edited")
-    }
-    function ondelHandler(){
-        console.log("delted")
-    }
+export function Card({ title, tasks, onEditTask, onDeleteTask }) {
+    
   return (
     <div className="w-full max-w-sm">
       <div className="flex items-center justify-between mb-2.5 px-0.5">
@@ -26,8 +21,8 @@ export function Card({ title, tasks }) {
             <TaskCard
               key={task._id}
               task={task}
-              ondelete={ondelHandler}
-              onedit={onEditHandler}
+              onedit={() => onEditTask(task)}
+              ondelete={onDeleteTask}
             />
           ))
         ) : (

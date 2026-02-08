@@ -1,9 +1,10 @@
-export function InputComponent({ placeholder, reference, type }) {
+export function InputComponent({ placeholder, reference, type, value }) {
   return (
     <input
       ref={reference}
       type={type}
       placeholder={placeholder}
+      value={value}
       className={
         type === "text"
           ? `

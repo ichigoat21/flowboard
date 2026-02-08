@@ -1,15 +1,27 @@
 import { Paperclip } from "lucide-react"
 import { CrossIcon } from "../../icons/crossIcon"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { InputComponent } from "./Input"
 import { Button } from "./Button"
 
-export function ModalComponent({ onclose, open, socket, isUpdate}) {
+export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
 
 
   const [priority, setPriority] = useState("low")
   const [state, setState] = useState("todo")
   const [fileName, setFileName] = useState("")
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+
+  useEffect(() => {
+    if (isUpdate && task) {
+      setTitle(task.title)
+      setDescription(task.description)
+      setPriority(task.priority)
+      setState(task.state)
+    }
+  }, [isUpdate, task])
+
 
   const titleRef = useRef()
   const descRef = useRef()
@@ -27,8 +39,13 @@ export function ModalComponent({ onclose, open, socket, isUpdate}) {
   }
 
   function handleSubmit () {
-    socket.emit("task:create", data )
-    onclose()
+    if(!isUpdate){
+        socket.emit("task:create", data )
+        onclose()
+    } else {
+
+    }
+
   }
   if (open === false ) return null
 
@@ -36,7 +53,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate}) {
     <div className="w-full max-w-md">
       <div className="bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-          <h2 className="text-xl font-semibold text-slate-900">Add Task</h2>
+          <h2 className="text-xl font-semibold text-slate-900">{isUpdate === true ? "Update" : "Add Task"}</h2>
           <button
             onClick={onclose}
             className="p-1 hover:bg-slate-100 rounded-md transition-colors"
@@ -49,6 +66,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate}) {
         <div className="p-5 space-y-4">
           <InputComponent
             reference={titleRef}
+            value={title}
             placeholder="Task title"
             type="text"
             className="w-full h-11 px-4 rounded-lg border-2 border-slate-200 bg-white outline-none transition-all duration-200
@@ -59,6 +77,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate}) {
 
           <InputComponent
             reference={descRef}
+            value={description}
             placeholder="Add a description"
             type="text"
             className="w-full h-11 px-4 rounded-lg border-2 border-slate-200 bg-white outline-none transition-all duration-200
