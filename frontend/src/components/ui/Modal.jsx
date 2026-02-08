@@ -4,7 +4,7 @@ import { useRef, useState } from "react"
 import { InputComponent } from "./Input"
 import { Button } from "./Button"
 
-export function ModalComponent({ onclose, open, socket}) {
+export function ModalComponent({ onclose, open, socket, isUpdate}) {
 
 
   const [priority, setPriority] = useState("low")
@@ -142,7 +142,7 @@ export function ModalComponent({ onclose, open, socket}) {
             onclick={handleSubmit}
             variant="primary"
             size="lg"
-            text="Add Task"
+            text={`${isUpdate === true ? "Update Task" : "Submit Task"}`}
           />
         </div>
       </div>
