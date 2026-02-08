@@ -12,28 +12,39 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
   const [fileName, setFileName] = useState("")
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-
   useEffect(() => {
+    if (!open) return
+  
     if (isUpdate && task) {
-      setTitle(task.title)
-      setDescription(task.description)
-      setPriority(task.priority)
-      setState(task.state)
+      setTitle(task.title ?? "")
+      setDescription(task.description ?? "")
+      setPriority(task.priority ?? "low")
+      setState(task.state ?? "todo")
+    } else {
+      setTitle("")
+      setDescription("")
+      setPriority("low")
+      setState("todo")
+      setFileName("")
     }
-  }, [isUpdate, task])
-
-
-  const titleRef = useRef()
-  const descRef = useRef()
-  const fileInputRef = useRef()
+  }, [open, isUpdate, task])
+  
+  function resetForm() {
+    setTitle("")
+    setDescription("")
+    setPriority("low")
+    setState("todo")
+    setFileName("")
+  }
+  
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0]
     setFileName(file?.name || "")
   }
   const data = {
-    title : titleRef.current?.value,
-    description : descRef.current?.value,
+    title : title,
+    description : description,
     column : state,
     priority : priority,
   }
@@ -43,8 +54,13 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
         socket.emit("task:create", data )
         onclose()
     } else {
-
+        socket.emit("task:update", {
+            id: task._id,
+            updates: data,
+          })
     }
+    onclose()
+    resetForm()
 
   }
   if (open === false ) return null
@@ -65,7 +81,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
 
         <div className="p-5 space-y-4">
           <InputComponent
-            reference={titleRef}
+            onchange={(e) => setTitle(e.target.value)}
             value={title}
             placeholder="Task title"
             type="text"
@@ -76,7 +92,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
           />
 
           <InputComponent
-            reference={descRef}
+            onchange={(e) => setDescription(e.target.value)}
             value={description}
             placeholder="Add a description"
             type="text"
@@ -140,7 +156,6 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
 
           <div>
             <input
-              ref={fileInputRef}
               type="file"
               onChange={handleFileChange}
               className="hidden"

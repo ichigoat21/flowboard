@@ -45,10 +45,7 @@ io.on("connection", async (socket) => {
       updates,
       { new: true }
     );
-  
-    if (task) {
       io.emit("task:updated", task);
-    }
   });
   
   socket.on("task:move", async ({ id, column }) => {

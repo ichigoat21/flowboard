@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { TaskCard } from "./Taskcard";
 
-
 export function Card({ title, tasks, onEditTask, onDeleteTask }) {
-    
   return (
-    <div className="w-full max-w-sm">
-      <div className="flex items-center justify-between mb-2.5 px-0.5">
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-3 px-1">
         <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
           {title}
         </h3>
@@ -15,14 +12,13 @@ export function Card({ title, tasks, onEditTask, onDeleteTask }) {
         </span>
       </div>
       
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {tasks && tasks.length > 0 ? (
           tasks.map((task) => (
             <TaskCard
-              key={task._id}
               task={task}
               onedit={() => onEditTask(task)}
-              ondelete={onDeleteTask}
+              ondelete={() => onDeleteTask(task)}
             />
           ))
         ) : (
