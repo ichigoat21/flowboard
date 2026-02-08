@@ -11,6 +11,8 @@ function KanbanBoard() {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState();
   const [update, setIsUpdate] = useState(false);
+  const [draggedTask, setDraggedTask] = useState(null)
+
 
   useEffect(() => {
     const ws = io("http://localhost:3001");
@@ -44,6 +46,29 @@ function KanbanBoard() {
       ws.disconnect();
     };
   }, []);
+
+  function handleDrop(column) {
+    if (!draggedTask) return
+    if (draggedTask.column === column) return
+  
+    const updatedTask = {
+      ...draggedTask,
+      column,
+    }
+  
+    setTasks((prev) =>
+      prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
+    )
+  
+    socket.emit("task:update", {
+      id: updatedTask._id,
+      updates: { column },
+    })
+  
+    setDraggedTask(null)
+  }
+  
+  
 
   function modalHandler() {
     setOpen(false);
@@ -98,24 +123,36 @@ function KanbanBoard() {
 
         <div className="grid md:grid-cols-3 gap-6">
           <Card
+            column="todo"
             title="To Do"
             tasks={tasks.filter((task) => task.column === "todo")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
+            onDragStart={setDraggedTask}
+            onDropTask={handleDrop}
+          
           />
 
           <Card
+            column="in-prog"
             title="In Progress"
             tasks={tasks.filter((task) => task.column === "in-prog")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
+            onDragStart={setDraggedTask}
+            onDropTask={handleDrop}
+          
           />
 
           <Card
+            column="done"
             title="Completed"
             tasks={tasks.filter((task) => task.column === "done")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
+            onDragStart={setDraggedTask}
+            onDropTask={handleDrop}
+          
           />
         </div>
       </div>

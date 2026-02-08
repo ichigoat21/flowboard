@@ -1,8 +1,20 @@
 import { TaskCard } from "./Taskcard";
 
-export function Card({ title, tasks, onEditTask, onDeleteTask }) {
+export function Card({
+  title,
+  column,
+  tasks,
+  onEditTask,
+  onDeleteTask,
+  onDragStart,
+  onDropTask,
+}) {
   return (
-    <div className="w-full">
+    <div
+      className="w-full min-h-[200px]"
+      onDragOver={(e) => e.preventDefault()} // REQUIRED for drop
+      onDrop={() => onDropTask(column)}
+    >
       <div className="flex items-center justify-between mb-3 px-1">
         <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
           {title}
@@ -11,25 +23,24 @@ export function Card({ title, tasks, onEditTask, onDeleteTask }) {
           {tasks?.length || 0}
         </span>
       </div>
-      
+
       <div className="space-y-2">
-        {tasks && tasks.length > 0 ? (
+        {tasks.length > 0 ? (
           tasks.map((task) => (
             <TaskCard
+              key={task._id}
               task={task}
               onedit={() => onEditTask(task)}
               ondelete={() => onDeleteTask(task)}
+              onDragStart={onDragStart}
             />
           ))
         ) : (
           <div className="bg-slate-50/50 rounded-lg border border-dashed border-slate-200 py-8 text-center">
-            <svg className="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" stroke="currentColor">
-              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <p className="text-xs text-slate-400 font-medium">No tasks</p>
+            <p className="text-xs text-slate-400 font-medium">Drop tasks here</p>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
