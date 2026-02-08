@@ -3,6 +3,7 @@ import { CrossIcon } from "../../icons/crossIcon"
 import { useEffect, useRef, useState } from "react"
 import { InputComponent } from "./Input"
 import { Button } from "./Button"
+import Select from "react-select"
 
 export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
 
@@ -12,6 +13,16 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
   const [fileName, setFileName] = useState("")
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
+  const [category, setCategory] = useState()
+
+  const CATEGORY_OPTIONS = [
+    { value: "work", label: "Work" },
+    { value: "personal", label: "Personal" },
+    { value: "bug", label: "Bug" },
+    { value: "feature", label: "Feature" },
+    { value: "research", label: "Research" },
+  ]
+  
   useEffect(() => {
     if (!open) return
   
@@ -19,24 +30,28 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
       setTitle(task.title ?? "")
       setDescription(task.description ?? "")
       setPriority(task.priority ?? "low")
-      setState(task.state ?? "todo")
-      
+      setState(task.column ?? "todo")
+  
+      if (task.category) {
+        const matched = CATEGORY_OPTIONS.find(
+          (c) => c.value === task.category
+        )
+        setCategory(matched || null)
+      }
     } else {
-      setTitle("")
-      setDescription("")
-      setPriority("low")
-      setState("todo")
-      setFileName("")
+      resetForm()
     }
   }, [open, isUpdate, task])
-  
+
   function resetForm() {
     setTitle("")
     setDescription("")
     setPriority("low")
     setState("todo")
     setFileName("")
+    setCategory(null)
   }
+  
   
 
   const handleFileChange = (e) => {
@@ -48,6 +63,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
     description : description,
     column : state,
     priority : priority,
+    category: category?.value || null
   }
 
 
@@ -69,7 +85,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
 
   return <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
     <div className="w-full max-w-md">
-      <div className="bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+      <div className="bg-white rounded-lg shadow-2xl flex flex-col">
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
           <h2 className="text-xl font-semibold text-slate-900">{isUpdate === true ? "Update" : "Add Task"}</h2>
           <button
@@ -173,6 +189,31 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
               </span>
             </label>
           </div>
+          <div className="relative z-50">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+             Category
+            </label>
+
+            <Select
+              options={CATEGORY_OPTIONS}
+              value={category}
+              onChange={setCategory}
+              placeholder="Select category"
+              isClearable
+              classNamePrefix="react-select"
+              styles={{
+               control: (base) => ({
+              ...base,
+              minHeight: "44px",
+              borderRadius: "0.5rem",
+              borderColor: "#e2e8f0",
+              boxShadow: "none",
+             "&:hover": { borderColor: "#60a5fa" },
+             }),
+            }}
+            />
+           </div>
+
 
           <Button
             onclick={handleSubmit}

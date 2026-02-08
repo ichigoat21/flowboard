@@ -30,7 +30,7 @@ export function TaskCard({
         onDragStart={() => onDragStart(task)}
         className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow duration-200 cursor-grab active:cursor-grabbing"
       >
-        {/* Header */}
+
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-base font-semibold text-slate-900 flex-1">
             {task.title}
@@ -56,7 +56,7 @@ export function TaskCard({
             )}
   
             {isCompleted && (
-              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500 ml-1">
+              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500 ml-1 text-white text-xs">
                 ✓
               </div>
             )}
@@ -70,13 +70,24 @@ export function TaskCard({
         )}
   
         <div className="flex items-center gap-2 flex-wrap">
-          <span className={`px-2.5 py-1 rounded-md text-xs font-medium border ${priorityColors[task.priority]}`}>
+          <span
+            className={`px-2.5 py-1 rounded-md text-xs font-medium border ${priorityColors[task.priority]}`}
+          >
             #{task.priority}
           </span>
   
-          <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${stateColors[task.column]}`}>
+          <span
+            className={`px-2.5 py-1 rounded-md text-xs font-medium ${stateColors[task.column]}`}
+          >
             {stateLabels[task.column]}
           </span>
+  
+
+          {task.category && (
+            <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+              {task.category}
+            </span>
+          )}
         </div>
       </div>
     )
