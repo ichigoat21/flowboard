@@ -97,44 +97,41 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
 
     try {
       if (!isUpdate) {
-        // CREATE NEW TASK
         socket.emit("task:create", data)
 
-        // Wait for task to be created
+
         socket.once("task:created", async (createdTask) => {
           let uploadSuccess = true
           
           try {
-            // Upload file if one was selected
+
             if (fileRef.current?.files[0]) {
               await uploadFile(createdTask._id)
             }
           } catch (error) {
-            // File upload failed, but task was created
             uploadSuccess = false
             console.error("File upload failed:", error)
             alert("Task created but file upload failed. Please try uploading again by editing the task.")
           }
 
-          // Close modal regardless (task was created)
+
           setIsUploading(false)
           onclose()
           resetForm()
         })
       } else {
-        // UPDATE EXISTING TASK
+     
         socket.emit("task:update", {
           id: task._id,
           updates: data,
         })
 
-        // Upload new file if one was selected
+  
         try {
           if (fileRef.current?.files[0]) {
             await uploadFile(task._id)
           }
           
-          // Success! Close modal
           onclose()
           resetForm()
         } catch (error) {

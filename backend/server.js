@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Task } from "./db.js";
 import { upload } from "./multer/uploads.js";
+import cors from 'cors'
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ mongoose.connect(process.env.MONGO_URL);
 const app = express();
 const server = http.createServer(app);
 
+app.use(cors())
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
@@ -43,7 +45,15 @@ app.post("/task/upload", upload.single("file"), async (req, res) => {
     );
 
     io.emit("task:updated", task);
-    res.json(task);
+    res.status(200).json({
+      success: true,
+      file: {
+        name: req.file.originalname,
+        url: `/uploads/${req.file.filename}`,
+        type: req.file.mimetype.startsWith("image") ? "image" : "pdf",
+      },
+    });
+    
   } catch (err) {
     res.status(500).json({ error: "Upload failed" });
   }
