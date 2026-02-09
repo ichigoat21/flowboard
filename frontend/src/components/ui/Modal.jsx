@@ -14,6 +14,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [category, setCategory] = useState()
+  const fileRef = useRef()
 
   const CATEGORY_OPTIONS = [
     { value: "work", label: "Work" },
@@ -67,19 +68,31 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
   }
 
 
-  function handleSubmit () {
-    if(!isUpdate){
-        socket.emit("task:create", data )
-        onclose()
+  function handleSubmit() {
+    if (!isUpdate) {
+      socket.emit("task:create", data);
+  
+      socket.once("task:created", async (task) => {
+        if (fileRef.current?.files[0]) {
+          const formData = new FormData();
+          formData.append("file", fileRef.current.files[0]);
+          formData.append("taskId", task._id);
+  
+          await fetch("http://localhost:3001/task/upload", {
+            method: "POST",
+            body: formData,
+          });
+        }
+      });
     } else {
-        socket.emit("task:update", {
-            id: task._id,
-            updates: data,
-          })
+      socket.emit("task:update", {
+        id: task._id,
+        updates: data,
+      });
     }
-    onclose()
-    resetForm()
-
+  
+    onclose();
+    resetForm();
   }
   if (open === false ) return null
 
@@ -175,6 +188,8 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task}) {
           <div>
             <input
               type="file"
+              ref={fileRef}
+              accept="image/*,application/pdf"
               onChange={handleFileChange}
               className="hidden"
               id="task-file-upload"

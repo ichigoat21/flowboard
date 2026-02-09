@@ -12,7 +12,7 @@ export function Card({
   return (
     <div
       className="w-full min-h-[200px]"
-      onDragOver={(e) => e.preventDefault()} // REQUIRED for drop
+      onDragOver={(e) => e.preventDefault()} 
       onDrop={() => onDropTask(column)}
     >
       <div className="flex items-center justify-between mb-3 px-1">

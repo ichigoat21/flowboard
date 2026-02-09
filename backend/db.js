@@ -1,15 +1,21 @@
 import mongoose from "mongoose";
 
-const TaskSchema = new mongoose.Schema(
-    {
-      title: { type: String, required: true },
-      description: String,
-      priority: { type: String, enum: ["low", "medium", "high"], default: "low" },
-      column: { type: String, required: true }, 
-      category: String,
-      attachments: [String],
-    },
-    { timestamps: true }
-  );
+const attachmentSchema = new mongoose.Schema({
+  url: String,
+  type: {
+    type: String,
+    enum: ["image", "pdf"],
+  },
+  name: String,
+});
 
-  export const Task = mongoose.model("Task", TaskSchema);
+const taskSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  column: String,
+  priority: String,
+  category: String,
+  attachments: [attachmentSchema],
+});
+
+export const Task = mongoose.model("Task", taskSchema);

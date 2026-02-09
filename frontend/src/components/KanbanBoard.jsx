@@ -3,6 +3,8 @@ import { io } from "socket.io-client";
 import { ModalComponent } from "./ui/Modal";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
+import { ProgressStrip } from "../components/ui/progressStrip";
+
 import { Loader } from "../icons/loading";
 
 function KanbanBoard() {
@@ -11,69 +13,39 @@ function KanbanBoard() {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState();
   const [update, setIsUpdate] = useState(false);
-  const [draggedTask, setDraggedTask] = useState(null)
-
+  const [draggedTask, setDraggedTask] = useState(null);
 
   useEffect(() => {
     const ws = io("http://localhost:3001");
 
-    ws.on("connect", () => {
-      console.log("Connected:", ws.id);
-      setSocket(ws);
-    });
+    ws.on("connect", () => setSocket(ws));
+    ws.on("sync:tasks", setTasks);
+    ws.on("task:created", task => setTasks(p => [...p, task]));
+    ws.on("task:updated", task =>
+      setTasks(p => p.map(t => (t._id === task._id ? task : t)))
+    );
+    ws.on("task:deleted", id =>
+      setTasks(p => p.filter(t => t._id !== id))
+    );
 
-    ws.on("sync:tasks", (tasksFromServer) => {
-      setTasks(tasksFromServer);
-    });
-
-    ws.on("task:created", (task) => {
-      setTasks((prev) => [...prev, task]);
-    });
-
-    ws.on("task:updated", (updatedTask) => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task._id === updatedTask._id ? updatedTask : task
-        )
-      );
-    });
-
-    ws.on("task:deleted", (taskId) => {
-      setTasks((prev) => prev.filter((task) => task._id !== taskId));
-    });
-
-    return () => {
-      ws.disconnect();
-    };
+    return () => ws.disconnect();
   }, []);
 
   function handleDrop(column) {
-    if (!draggedTask) return
-    if (draggedTask.column === column) return
-  
-    const updatedTask = {
-      ...draggedTask,
-      column,
-    }
-  
-    setTasks((prev) =>
-      prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
-    )
-  
-    socket.emit("task:update", {
-      id: updatedTask._id,
-      updates: { column },
-    })
-  
-    setDraggedTask(null)
-  }
-  
-  
+    if (!draggedTask || draggedTask.column === column) return;
 
-  function modalHandler() {
-    setOpen(false);
-    setIsUpdate(false);
-    setSelectedTask(undefined);
+    const updated = { ...draggedTask, column };
+
+    setTasks(p =>
+      p.map(t => (t._id === updated._id ? updated : t))
+    );
+
+    socket.emit("task:update", {
+      id: updated._id,
+      updates: { column },
+    });
+
+    setDraggedTask(null);
   }
 
   function editHandler(task) {
@@ -81,40 +53,43 @@ function KanbanBoard() {
     setIsUpdate(true);
     setOpen(true);
   }
+
   function deleteHandler(task) {
-    console.log("DELETE CLICKED", task);
-    setSelectedTask(task);
     socket.emit("task:delete", { id: task._id });
   }
 
-  if (!socket){
-    return <div className="min-h-screen w-full flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold text-slate-900">Kanban Board</h1>
-      <Loader/>
-    </div>
+  if (!socket) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-bold">Kanban Board</h1>
+        <Loader />
+      </div>
+    );
   }
-  
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-slate-900">Kanban Board</h1>
-          
           <Button
             size="md"
             variant="secondary"
             text="Add Task"
-            onclick={() => {
-              setOpen(true);
-            }}
+            onclick={() => setOpen(true)}
           />
+          <div className="mb-6">
+         <ProgressStrip tasks={tasks} />
+           </div>
         </div>
+
 
         <ModalComponent
           socket={socket}
           onclose={() => {
-            modalHandler();
+            setOpen(false);
+            setIsUpdate(false);
+            setSelectedTask(undefined);
           }}
           open={open}
           isUpdate={update}
@@ -125,34 +100,31 @@ function KanbanBoard() {
           <Card
             column="todo"
             title="To Do"
-            tasks={tasks.filter((task) => task.column === "todo")}
+            tasks={tasks.filter(t => t.column === "todo")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
             onDragStart={setDraggedTask}
             onDropTask={handleDrop}
-          
           />
 
           <Card
             column="in-prog"
             title="In Progress"
-            tasks={tasks.filter((task) => task.column === "in-prog")}
+            tasks={tasks.filter(t => t.column === "in-prog")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
             onDragStart={setDraggedTask}
             onDropTask={handleDrop}
-          
           />
 
           <Card
             column="done"
             title="Completed"
-            tasks={tasks.filter((task) => task.column === "done")}
+            tasks={tasks.filter(t => t.column === "done")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
             onDragStart={setDraggedTask}
             onDropTask={handleDrop}
-          
           />
         </div>
       </div>

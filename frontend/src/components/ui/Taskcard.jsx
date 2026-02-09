@@ -8,21 +8,21 @@ export function TaskCard({
       low: "bg-green-100 text-green-700 border-green-200",
       medium: "bg-yellow-100 text-yellow-700 border-yellow-200",
       high: "bg-red-100 text-red-700 border-red-200",
-    }
+    };
   
     const stateColors = {
       todo: "bg-rose-50 text-rose-600",
       "in-prog": "bg-blue-50 text-blue-600",
       done: "bg-emerald-50 text-emerald-600",
-    }
+    };
   
     const stateLabels = {
       todo: "To Do",
       "in-prog": "In Progress",
       done: "Completed",
-    }
+    };
   
-    const isCompleted = task.column === "done"
+    const isCompleted = task.column === "done";
   
     return (
       <div
@@ -30,7 +30,6 @@ export function TaskCard({
         onDragStart={() => onDragStart(task)}
         className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow duration-200 cursor-grab active:cursor-grabbing"
       >
-
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-base font-semibold text-slate-900 flex-1">
             {task.title}
@@ -69,6 +68,34 @@ export function TaskCard({
           </p>
         )}
   
+        {task.attachments?.length > 0 && (
+          <div className="mb-3 space-y-2">
+            {task.attachments.map((file, idx) => (
+              <div
+                key={idx}
+                className="border border-slate-200 rounded-md p-2 bg-slate-50"
+              >
+                {file.type === "image" ? (
+                  <img
+                    src={`http://localhost:3001${file.url}`}
+                    alt={file.name}
+                    className="w-full max-h-40 object-cover rounded"
+                  />
+                ) : (
+                  <a
+                    href={`http://localhost:3001${file.url}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-blue-600 hover:underline flex items-center gap-2"
+                  >
+                    📄 {file.name}
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+  
         <div className="flex items-center gap-2 flex-wrap">
           <span
             className={`px-2.5 py-1 rounded-md text-xs font-medium border ${priorityColors[task.priority]}`}
@@ -82,7 +109,6 @@ export function TaskCard({
             {stateLabels[task.column]}
           </span>
   
-
           {task.category && (
             <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
               {task.category}
@@ -90,6 +116,6 @@ export function TaskCard({
           )}
         </div>
       </div>
-    )
+    );
   }
   
