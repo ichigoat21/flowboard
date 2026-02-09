@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { upload } from "../multer/upload.js";
+import { upload } from "../multer/uploads.js";
 import { Task } from "../db.js";
 
 export const fileRouter = Router();

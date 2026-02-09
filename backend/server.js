@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Task } from "./db.js";
-import { upload } from "./multer/upload.js";
+import { upload } from "./multer/uploads.js";
 
 dotenv.config();
 
