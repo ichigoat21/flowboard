@@ -35,7 +35,9 @@ export function ProgressStrip({ tasks }) {
   };
 
   return (
-    <div className="flex items-center gap-6 bg-white border border-slate-200 rounded-xl px-4 py-3">
+    <div 
+    data-testid="progress-strip"
+    className="flex items-center gap-6 bg-white border border-slate-200 rounded-xl px-4 py-3">
       <div className="flex-1">
         <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
@@ -43,7 +45,7 @@ export function ProgressStrip({ tasks }) {
             style={{ width: `${percent}%` }}
           />
         </div>
-        <p className="text-xs text-slate-500 mt-1">{percent}% completed</p>
+        <p className="text-xs text-slate-500 mt-1">{percent}% finished</p>
       </div>
 
       <div className="w-32 h-12">

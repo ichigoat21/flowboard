@@ -14,6 +14,10 @@ function KanbanBoard() {
   const [selectedTask, setSelectedTask] = useState();
   const [update, setIsUpdate] = useState(false);
   const [draggedTask, setDraggedTask] = useState(null);
+  const [synced, setSynced] = useState(false);
+
+
+
 
   useEffect(() => {
     const ws = io("http://localhost:3001");
@@ -21,12 +25,18 @@ function KanbanBoard() {
     ws.on("connect", () => setSocket(ws));
 
     ws.on("sync:tasks", (incoming) => {
-   
       setTasks(incoming.map((t) => ({ ...t, _id: String(t._id) })));
+      setSynced(true);
     });
 
     ws.on("task:created", (task) => {
-      setTasks((p) => [...p, { ...task, _id: String(task._id) }]);
+      const normalised = { ...task, _id: String(task._id) };
+
+      setTasks((prev) => {
+        const exists = prev.some((t) => t._id === normalised._id);
+        if (exists) return prev; 
+        return [...prev, normalised];
+      });
     });
 
     ws.on("task:updated", (task) => {
@@ -69,7 +79,7 @@ function KanbanBoard() {
     socket.emit("task:delete", { id: task._id });
   }
 
-  if (!socket) {
+  if ( !socket || !synced) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold">Kanban Board</h1>

@@ -214,8 +214,7 @@ describe('KanbanBoard Integration', () => {
       description: 'Original',
       attachments: [],
     }
-    
-    // Set up initial task
+
     await act(async () => {
       if (eventCallbacks.connect) {
         eventCallbacks.connect()

@@ -81,7 +81,7 @@ export function TaskCard({ task, onedit, ondelete, onDragStart }) {
     done:     "bg-emerald-50 text-emerald-600",
   };
   const stateLabels = {
-    todo:     "To Do",
+    todo:     "ToDo",
     "in-prog":"In Progress",
     done:     "Completed",
   };
@@ -107,6 +107,7 @@ export function TaskCard({ task, onedit, ondelete, onDragStart }) {
       )}
 
       <div
+        data-testid="task-card" 
         draggable
         onDragStart={() => onDragStart(task)}
         className="bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing overflow-hidden"

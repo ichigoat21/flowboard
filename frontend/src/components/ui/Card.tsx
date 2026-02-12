@@ -12,6 +12,7 @@ export function Card({
     
   return (
     <div
+      data-testid={`column-${column}`}  
       className="w-full min-h-[200px]"
       onDragOver={(e) => e.preventDefault()} 
       onDrop={() => onDropTask(column)}
