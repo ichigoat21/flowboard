@@ -4,8 +4,8 @@ import { ModalComponent } from "./ui/Modal";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import { ProgressStrip } from "../components/ui/progressStrip";
-
 import { Loader } from "../icons/loading";
+
 
 function KanbanBoard() {
   const [open, setOpen] = useState(false);
@@ -19,32 +19,43 @@ function KanbanBoard() {
     const ws = io("http://localhost:3001");
 
     ws.on("connect", () => setSocket(ws));
-    ws.on("sync:tasks", setTasks);
-    ws.on("task:created", task => setTasks(p => [...p, task]));
-    ws.on("task:updated", task =>
-      setTasks(p => p.map(t => (t._id === task._id ? task : t)))
-    );
-    ws.on("task:deleted", id =>
-      setTasks(p => p.filter(t => t._id !== id))
-    );
+
+    ws.on("sync:tasks", (incoming) => {
+   
+      setTasks(incoming.map((t) => ({ ...t, _id: String(t._id) })));
+    });
+
+    ws.on("task:created", (task) => {
+      setTasks((p) => [...p, { ...task, _id: String(task._id) }]);
+    });
+
+    ws.on("task:updated", (task) => {
+      const normalised = { ...task, _id: String(task._id) };
+      setTasks((p) =>
+        p.map((t) => (String(t._id) === normalised._id ? normalised : t))
+      );
+    });
+
+    ws.on("task:moved", ({ id, column }) => {
+      setTasks((p) =>
+        p.map((t) => (String(t._id) === String(id) ? { ...t, column } : t))
+      );
+    });
+
+    ws.on("task:deleted", (id) => {
+      setTasks((p) => p.filter((t) => String(t._id) !== String(id)));
+    });
 
     return () => ws.disconnect();
   }, []);
 
   function handleDrop(column) {
     if (!draggedTask || draggedTask.column === column) return;
-
     const updated = { ...draggedTask, column };
-
-    setTasks(p =>
-      p.map(t => (t._id === updated._id ? updated : t))
+    setTasks((p) =>
+      p.map((t) => (String(t._id) === String(updated._id) ? updated : t))
     );
-
-    socket.emit("task:update", {
-      id: updated._id,
-      updates: { column },
-    });
-
+    socket.emit("task:update", { id: updated._id, updates: { column } });
     setDraggedTask(null);
   }
 
@@ -79,10 +90,9 @@ function KanbanBoard() {
             onclick={() => setOpen(true)}
           />
           <div className="mb-6">
-         <ProgressStrip tasks={tasks} />
-           </div>
+            <ProgressStrip tasks={tasks} />
+          </div>
         </div>
-
 
         <ModalComponent
           socket={socket}
@@ -100,27 +110,25 @@ function KanbanBoard() {
           <Card
             column="todo"
             title="To Do"
-            tasks={tasks.filter(t => t.column === "todo")}
+            tasks={tasks.filter((t) => t.column === "todo")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
             onDragStart={setDraggedTask}
             onDropTask={handleDrop}
           />
-
           <Card
             column="in-prog"
             title="In Progress"
-            tasks={tasks.filter(t => t.column === "in-prog")}
+            tasks={tasks.filter((t) => t.column === "in-prog")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
             onDragStart={setDraggedTask}
             onDropTask={handleDrop}
           />
-
           <Card
             column="done"
             title="Completed"
-            tasks={tasks.filter(t => t.column === "done")}
+            tasks={tasks.filter((t) => t.column === "done")}
             onEditTask={editHandler}
             onDeleteTask={deleteHandler}
             onDragStart={setDraggedTask}

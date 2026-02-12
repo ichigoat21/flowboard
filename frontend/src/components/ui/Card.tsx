@@ -9,6 +9,7 @@ export function Card({
   onDragStart,
   onDropTask,
 }) {
+    
   return (
     <div
       className="w-full min-h-[200px]"
