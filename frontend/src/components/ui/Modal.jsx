@@ -84,7 +84,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task }) {
     const formData = new FormData()
     formData.append("file", fileRef.current.files[0])
     formData.append("taskId", taskId)
-    const response = await fetch("http://localhost:3001/task/upload", {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/task/upload`, {
       method: "POST",
       body: formData,
     })
@@ -353,7 +353,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task }) {
                       Current attachments ({existingAttachments.length})
                     </p>
                     {existingAttachments.map((att, i) => {
-                      const url = `http://localhost:3001${att.url}`;
+                      const url = `${import.meta.env.VITE_SERVER_URL}${att.url}`;
                       return (
                         <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-50 border border-slate-100">
                           {att.type === "image" ? (

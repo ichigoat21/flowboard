@@ -3,7 +3,7 @@ import { useState } from "react";
 function AttachmentLightbox({ attachments, initialIndex, onClose }) {
   const [current, setCurrent] = useState(initialIndex);
   const file = attachments[current];
-  const fullUrl = `http://localhost:3001${file.url}`;
+  const fullUrl = `${import.meta.env.VITE_SERVER_URL}${file.url}`;
   const total = attachments.length;
 
   function prev(e) { e.stopPropagation(); setCurrent((c) => (c - 1 + total) % total); }
@@ -39,7 +39,7 @@ function AttachmentLightbox({ attachments, initialIndex, onClose }) {
         {total > 1 && (
           <div className="flex gap-2">
             {attachments.map((a, i) => {
-              const u = `http://localhost:3001${a.url}`;
+              const u = `${a.url}`;
               return (
                 <button key={i} onClick={() => setCurrent(i)} className={`w-10 h-10 rounded-lg overflow-hidden border-2 transition-all ${i === current ? "border-white scale-110" : "border-white/20 opacity-60 hover:opacity-90"}`}>
                   {a.type === "image" ? (
@@ -122,7 +122,7 @@ export function TaskCard({ task, onedit, ondelete, onDragStart, test }) {
                 draggable={false}
               >
                 <img
-                  src={`http://localhost:3001${images[0].url}`}
+                  src={`${import.meta.env.VITE_SERVER_URL}${images[0].url}`}
                   alt={images[0].name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
@@ -154,7 +154,7 @@ export function TaskCard({ task, onedit, ondelete, onDragStart, test }) {
                       draggable={false}
                     >
                       <img
-                        src={`http://localhost:3001${img.url}`}
+                        src={`${import.meta.env.VITE_SERVER_URL}${img.url}`}
                         alt={img.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -170,6 +170,7 @@ export function TaskCard({ task, onedit, ondelete, onDragStart, test }) {
             )}
           </div>
         )}
+
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-2">
             <h3 className="text-sm font-semibold text-slate-900 flex-1 leading-snug">{task.title}</h3>
