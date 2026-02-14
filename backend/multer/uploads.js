@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 const storage = multer.diskStorage({
   destination: path.join(__dirname, "../uploads"),
   filename: (_, file, cb) => {
-    // Sanitize: replace spaces and special chars so the filename is URL-safe
     const safe = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, "_");
     cb(null, Date.now() + "-" + safe);
   },

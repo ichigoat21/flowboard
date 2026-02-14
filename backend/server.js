@@ -20,13 +20,12 @@ const __dirname = path.dirname(__filename);
 
 const corsOptions = { origin: "*", optionsSuccessStatus: 200 };
 
-// Apply CORS globally FIRST — before any other middleware including static
-app.use(cors({ origin: 'http://localhost:5173',          // ← your React dev server port
+app.use(cors({ origin: 'http://localhost:3000',          
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']}));
 app.use(express.json());
 
-// Serve uploads with explicit CORS headers so <img> tags from other origins work
+
 app.use("/uploads", (req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
@@ -103,5 +102,5 @@ io.on("connection", async (socket) => {
 });
 
 server.listen(3001, () => {
-  console.log("Server running on http://localhost:3001");
+  console.log("Server running");
 });
