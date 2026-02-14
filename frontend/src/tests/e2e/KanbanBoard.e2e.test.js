@@ -8,8 +8,11 @@ async function waitForBoard(page) {
   ).toBeVisible({ timeout: 15_000 });
 }
 
+const generateUniqueTitle = (base) => 
+  `${base}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
 async function createTask(page, {
-  title       = `Task-${Date.now()}`,
+  title       = `Task-${generateUniqueTitle}`,
   description = "E2E description",
   priority    = "low",
   category    = "feature",
@@ -58,9 +61,9 @@ test.describe("Kanban Board", () => {
 
   test("all three columns are visible", async ({ page }) => {
     await waitForBoard(page);
-    await expect(page.getByText("To Do")).toBeVisible();
-    await expect(page.getByText("In Progress")).toBeVisible();
-    await expect(page.getByText("Completed")).toBeVisible();
+    await expect(page.locator('[data-testid="column-todo"]')).toBeVisible();
+    await expect(page.locator('[data-testid="column-in-prog"]')).toBeVisible();
+    await expect(page.locator('[data-testid="column-done"]')).toBeVisible();
   });
 
   test("user can create a task and see it on the board", async ({ page }) => {
@@ -93,6 +96,7 @@ test.describe("Kanban Board", () => {
     await expect(card).toBeVisible({ timeout: 8_000 });
 
     const inProg = page.locator('[data-testid="column-in-prog"]');
+    await expect(inProg).toBeVisible();
 
     await card.dispatchEvent("dragstart");
     await inProg.dispatchEvent("dragover");
@@ -282,6 +286,7 @@ test.describe("Graph / Progress Strip", () => {
     const before = await strip.locator("p").textContent();
 
     const doneCol = page.locator('[data-testid="column-done"]');
+    await expect(doneCol).toBeVisible();
     await card.dispatchEvent("dragstart");
     await doneCol.dispatchEvent("dragover");
     await doneCol.dispatchEvent("drop");

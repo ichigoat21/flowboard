@@ -92,17 +92,23 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task }) {
     return await response.json()
   }
 
-  function waitForTaskCreated() {
+  function waitForTaskCreated(taskData) {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         socket.off("task:created", handler)
         reject(new Error("Timed out waiting for task creation"))
       }, 8000)
       function handler(createdTask) {
-        clearTimeout(timeout)
-        resolve(createdTask)
+        if (
+          createdTask.title === taskData.title &&
+          createdTask.column === taskData.column
+        ) {
+          clearTimeout(timeout)
+          socket.off("task:created", handler)
+          resolve(createdTask)
+        }
       }
-      socket.once("task:created", handler)
+      socket.on("task:created", handler)
     })
   }
 
@@ -114,7 +120,7 @@ export function ModalComponent({ onclose, open, socket, isUpdate, task }) {
     setIsUploading(true)
     try {
       if (!isUpdate) {
-        const createdTaskPromise = waitForTaskCreated()
+        const createdTaskPromise = waitForTaskCreated(data)
         socket.emit("task:create", data)
         const createdTask = await createdTaskPromise
         if (fileRef.current?.files[0]) {

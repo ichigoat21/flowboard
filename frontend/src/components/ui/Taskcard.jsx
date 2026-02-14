@@ -67,7 +67,7 @@ function AttachmentLightbox({ attachments, initialIndex, onClose }) {
   );
 }
 
-export function TaskCard({ task, onedit, ondelete, onDragStart }) {
+export function TaskCard({ task, onedit, ondelete, onDragStart, test }) {
   const [lightbox, setLightbox] = useState(null);
 
   const priorityColors = {
@@ -77,12 +77,12 @@ export function TaskCard({ task, onedit, ondelete, onDragStart }) {
   };
   const stateColors = {
     todo:     "bg-rose-50 text-rose-600",
-    "in-prog":"bg-blue-50 text-blue-600",
+    "in-prog" :"bg-blue-50 text-blue-600",
     done:     "bg-emerald-50 text-emerald-600",
   };
   const stateLabels = {
     todo:     "ToDo",
-    "in-prog":"In Progress",
+     "in-prog" : "In Progress",
     done:     "Completed",
   };
 
@@ -107,7 +107,7 @@ export function TaskCard({ task, onedit, ondelete, onDragStart }) {
       )}
 
       <div
-        data-testid="task-card" 
+        data-testid={test}
         draggable
         onDragStart={() => onDragStart(task)}
         className="bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing overflow-hidden"
@@ -170,8 +170,6 @@ export function TaskCard({ task, onedit, ondelete, onDragStart }) {
             )}
           </div>
         )}
-
-        {/* ── Card body ── */}
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-2">
             <h3 className="text-sm font-semibold text-slate-900 flex-1 leading-snug">{task.title}</h3>

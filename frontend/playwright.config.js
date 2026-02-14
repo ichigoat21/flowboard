@@ -1,4 +1,3 @@
-// playwright.config.js
 import { defineConfig } from "@playwright/test";
 
 
@@ -18,15 +17,12 @@ export default defineConfig({
       use: { browserName: "chromium" },
     }
   ],
+  globalSetup: "./src/tests/global.config",
 
   webServer: {
-    // ✅ Use dev server — instant startup, no build step needed
     command: "npm run dev",
-    // ✅ Vite frontend port, NOT the backend (3001 is your Express/Socket.io server)
     port: 3000,
-    // ✅ Reuse if already running (convenient during active development)
     reuseExistingServer: true,
-    // ✅ Sane timeout — Vite is ready in ~3s, 30s is more than enough
     timeout: 30 * 1000,
   },
 });

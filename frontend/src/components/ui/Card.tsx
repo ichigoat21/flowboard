@@ -30,6 +30,7 @@ export function Card({
         {tasks.length > 0 ? (
           tasks.map((task) => (
             <TaskCard
+              test="task-card"
               key={task._id}
               task={task}
               onedit={() => onEditTask(task)}

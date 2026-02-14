@@ -30,7 +30,7 @@ describe('ProgressStrip Component', () => {
   it('renders correctly with no tasks', () => {
     render(<ProgressStrip tasks={[]} />)
     
-    expect(screen.getByText('0% completed')).toBeInTheDocument()
+    expect(screen.getByText('0% finished')).toBeInTheDocument()
   })
 
   
@@ -44,11 +44,11 @@ describe('ProgressStrip Component', () => {
     
     render(<ProgressStrip tasks={tasks} />)
     
-    expect(screen.getByText('50% completed')).toBeInTheDocument()
+    expect(screen.getByText('50% finished')).toBeInTheDocument()
   })
 
 
-  it('shows 100% when all tasks are completed', () => {
+  it('shows 100% when all tasks are finished', () => {
     const tasks = [
       { column: 'done', _id: '1' },
       { column: 'done', _id: '2' },
@@ -56,7 +56,7 @@ describe('ProgressStrip Component', () => {
     
     render(<ProgressStrip tasks={tasks} />)
     
-    expect(screen.getByText('100% completed')).toBeInTheDocument()
+    expect(screen.getByText('100% finished')).toBeInTheDocument()
   })
 
   it('sets correct width for progress indicator', () => {
@@ -172,7 +172,7 @@ describe('ProgressStrip Component', () => {
     ]
     
     const { rerender } = render(<ProgressStrip tasks={tasks33} />)
-    expect(screen.getByText('33% completed')).toBeInTheDocument()
+    expect(screen.getByText('33% finished')).toBeInTheDocument()
     
  
     const tasks80 = [
@@ -184,7 +184,7 @@ describe('ProgressStrip Component', () => {
     ]
     
     rerender(<ProgressStrip tasks={tasks80} />)
-    expect(screen.getByText('80% completed')).toBeInTheDocument()
+    expect(screen.getByText('80% finished')).toBeInTheDocument()
   })
 
   it('configures chart with correct options', () => {
@@ -222,7 +222,7 @@ describe('ProgressStrip Component', () => {
     expect(container.querySelector('.bg-emerald-500')).toBeInTheDocument()
     
    
-    expect(screen.getByText(/% completed/)).toBeInTheDocument()
+    expect(screen.getByText(/% finished/)).toBeInTheDocument()
     
    
     expect(screen.getByTestId('mock-chart')).toBeInTheDocument()
@@ -239,7 +239,7 @@ describe('ProgressStrip Component', () => {
     render(<ProgressStrip tasks={tasks} />)
     
     
-    expect(screen.getByText('67% completed')).toBeInTheDocument()
+    expect(screen.getByText('67% finished')).toBeInTheDocument()
   })
 
   it('updates chart data when tasks change', () => {
