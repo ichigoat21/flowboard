@@ -18,11 +18,9 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const corsOptions = { origin: "*", optionsSuccessStatus: 200 };
 
-app.use(cors({ origin: 'http://localhost:3000',          
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']}));
+
+app.use(cors());
 app.use(express.json());
 
 

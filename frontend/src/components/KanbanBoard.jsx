@@ -6,6 +6,9 @@ import { Card } from "./ui/Card";
 import { ProgressStrip } from "../components/ui/progressStrip";
 import { Loader } from "../icons/loading";
 
+
+
+
 function KanbanBoard() {
   const [open, setOpen] = useState(false);
   const [socket, setSocket] = useState(null);
@@ -20,7 +23,10 @@ function KanbanBoard() {
   const doneTasks = tasks.filter(t => t.column === "done")
 
   useEffect(() => {
-    const ws = io("http://localhost:3001");
+   
+    console.log()
+
+    const ws = io(import.meta.env.VITE_SERVER_URL);
     ws.on("connect", () => setSocket(ws));
     ws.on("sync:tasks", (incoming) => {
       setTasks(incoming.map((t) => ({ ...t, _id: String(t._id) })));
