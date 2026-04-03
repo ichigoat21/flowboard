@@ -18,11 +18,8 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-
 app.use(cors());
 app.use(express.json());
-
 
 app.use("/uploads", (req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -74,6 +71,23 @@ app.post("/task/upload", upload.single("file"), async (req, res) => {
   }
 });
 
+// Self-ping: hits /health every 14 minutes to prevent free-tier spin-down
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", ts: Date.now() })
+})
+
+const PORT = 3001
+const SELF_URL = process.env.SELF_URL || `http://localhost:${PORT}`
+
+setInterval(async () => {
+  try {
+    const res = await fetch(`${SELF_URL}/health`)
+    console.log(`[self-ping] ${new Date().toISOString()} → ${res.status}`)
+  } catch (err) {
+    console.error("[self-ping] failed:", err)
+  }
+}, 14 * 60 * 1000)
+
 io.on("connection", async (socket) => {
   const tasks = await Task.find();
   socket.emit("sync:tasks", tasks.map(toPlain));
@@ -99,6 +113,6 @@ io.on("connection", async (socket) => {
   });
 });
 
-server.listen(3001, () => {
+server.listen(PORT, () => {
   console.log("Server running");
 });
